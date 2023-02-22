@@ -1,1 +1,40 @@
+const int motionPin = 2;
+const int soilMoisturePin = 3;
+
+volatile int motionState = LOW;
+volatile bool moistureDetected = false;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(motionPin, INPUT);
+  pinMode(soilMoisturePin, INPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(motionPin), motionInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(soilMoisturePin), moistureInterrupt, CHANGE);
+}
+
+void loop() {
+}
+
+void motionInterrupt() {
+   motionState = digitalRead(motionPin);
+  digitalWrite(LED_BUILTIN, motionState);
+ 
+  if (motionState == HIGH) {
+      Serial.println("Motion detected!");
+      Serial.println("LED turn on");
+    } else {
+      Serial.println("Motion ended.");
+      Serial.println("LED turn off");
+    }
+}
+
+void moistureInterrupt() {
+  int moistureLevel = analogRead(soilMoisturePin);
+  Serial.print("Moisture level: ");
+  Serial.println(moistureLevel);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+}
 
