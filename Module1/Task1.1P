@@ -1,10 +1,10 @@
 // C++ code
 
 // motion sensor connected to digital pin 2
-const int MotionSensor = 2;  
+const int MotionPin = 2;  
 
 // initial state of sensor is LOW
-int MotionState = LOW;
+int StateMotion = LOW;
 
 void setup() {
   // initialize the LED pin as an output:
