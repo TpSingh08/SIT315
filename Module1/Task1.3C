@@ -1,40 +1,44 @@
-const int motionPin = 2;
-const int soilMoisturePin = 3;
+const int sensormotion = 2;
+const int sensormoisture = 3;
+const int ledred = 8;
+const int ledwhite = 9;
 
-volatile int motionState = LOW;
-volatile bool moistureDetected = false;
+volatile int motionstate = LOW;
 
 void setup() {
+  pinMode(ledred, OUTPUT);
+  pinMode(ledwhite, OUTPUT);
+  pinMode(sensormotion, INPUT);
+  pinMode(sensormoisture, INPUT);
+
   Serial.begin(9600);
-  pinMode(motionPin, INPUT);
-  pinMode(soilMoisturePin, INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(motionPin), motionInterrupt, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(soilMoisturePin), moistureInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(sensormotion), motionInterrupt, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(sensormoisture), moistureInterrupt, CHANGE);
 }
 
 void loop() {
 }
 
 void motionInterrupt() {
-   motionState = digitalRead(motionPin);
-  digitalWrite(LED_BUILTIN, motionState);
- 
-  if (motionState == HIGH) {
-      Serial.println("Motion detected!");
-      Serial.println("LED turn on");
-    } else {
-      Serial.println("Motion ended.");
-      Serial.println("LED turn off");
-    }
+  motionstate = digitalRead(sensormotion);
+
+  if (motionstate == HIGH) {
+    Serial.println("Motion present");
+    digitalWrite(ledwhite, HIGH);
+    Serial.println("LED on");
+  }
+  else {
+    Serial.println("Motion absent");
+    digitalWrite(ledwhite, LOW);
+    Serial.println("LED off");
+  }
 }
 
 void moistureInterrupt() {
-  int moistureLevel = analogRead(soilMoisturePin);
+  int moisture = analogRead(sensormoisture);
   Serial.print("Moisture level: ");
-  Serial.println(moistureLevel);
-  digitalWrite(LED_BUILTIN, HIGH);
+  Serial.println(moisture);
+  digitalWrite(ledred, HIGH);
   delay(1000);
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(ledred, LOW);
 }
-
